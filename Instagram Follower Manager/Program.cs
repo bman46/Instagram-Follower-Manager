@@ -120,7 +120,7 @@ namespace Instagram_Follower_Manager
                 result = await _instaApi.GetUserFollowingAsync(currentUser.Value.UserName, PaginationParameters.MaxPagesToLoad(5));
                 var following = result.Value;
 
-                Console.WriteLine("\nPeople who dont follow you back :( \n");
+                Console.WriteLine("\nPeople who dont follow you back:\n");
 
                 foreach (var x in following)
                 {
@@ -129,13 +129,19 @@ namespace Instagram_Follower_Manager
                         Console.WriteLine(x.UserName.ToString());
                     }                   
                 }
-                Console.WriteLine("\nType a Username to unfollow them. (put a space before typing the username)");
+                Console.WriteLine("\nType a Username to unfollow them.");
                 Console.WriteLine("press ESC to exit.");
                do
                 {
                     var resultnew = await _instaApi.GetUserAsync(Console.ReadLine());
-                    await _instaApi.UnFollowUserAsync(resultnew.Value.Pk);
-                    Console.WriteLine("Unfollowed.");
+                    try
+                    {
+                        await _instaApi.UnFollowUserAsync(resultnew.Value.Pk);
+                        Console.WriteLine("Unfollowed.\n");
+                    } catch
+                    {
+                        Console.WriteLine("Failed to unfollow, verify that you typed the name correctly.\n");
+                    }
                 } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
                 Environment.Exit(0);
             }
